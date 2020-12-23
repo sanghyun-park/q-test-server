@@ -1,0 +1,62 @@
+doctype html
+html
+  head
+    title Quectel Net Test Server v1
+    link(rel='apple-touch-icon', sizes='180x180', href='/apple-touch-icon.png')
+    link(rel='icon' type='image/png' sizes='32x32' href='/favicon-32x32.png')
+    link(rel='icon' type='image/png' sizes='16x16' href='/favicon-16x16.png')
+    link(rel='manifest' href='/site.webmanifest')
+    link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1' crossorigin='anonymous')
+    link(href='/stylesheets/style.css' rel='stylesheet')
+  body
+    header.navbar.navbar-dark.sticky-top.bg-dark.flex-md-nowrap.p-0.shadow
+      a.navbar-brand.col-md-3.col-lg-2.me-0.px-3 Quectel Test Server
+      button.navbar-toggler.position-absolute.d-md-none.collapsed(type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation")
+        span.navbar-toggler-icon
+    .container-fluid
+      .row
+        nav.col-md-3.col-lg-2.d-md-block.bg-light.sidebar.collapse(id='sidebarMenu')
+          .position-sticky.pt-3
+            ul.nav.flex-column
+              li.nav-item
+                a.nav-link(class=path === '/' ? 'active' : '' href='/')
+                  span(data-feather='home')
+                  | Dashboard
+              li.nav-item
+                a.nav-link(class=path === '/tcp' ? 'active' : '' href='/tcp')
+                  span(data-feather='minus')
+                  | TCP
+              //li.nav-item
+                a.nav-link(class=path === '/udp' ? 'active' : '' href='/udp')
+                  span(data-feather='minus')
+                  | UDP
+              //li.nav-item
+                a.nav-link(class=path === '/ftp' ? 'active' : '' href='/ftp')
+                  span(data-feather='minus')
+                  | FTP
+              //li.nav-item
+                a.nav-link(class=path === '/mqtt' ? 'active' : '' href='/mqtt')
+                  span(data-feather='minus')
+                  | MQTT
+            //h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-4.mb-1.text-muted
+              span Guide
+            //ul.nav.flex-column
+              li.nav-item
+                a.nav-link(href='#')
+                  span(data-feather='file-text')
+                  | AT Command
+            //h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-4.mb-1.text-muted
+              span Statistics
+            //ul.nav.flex-column
+              li.nav-item
+                a.nav-link(href='#')
+                  span(data-feather='bar-chart-2')
+                  | Data usage
+      main.col-md-9.ms-sm-auto.col-lg-10.px-md-4
+        block content
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js' integrity='sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW' crossorigin='anonymous')
+    script(src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous")
+    script(src='/socket.io/socket.io.js')
+    script.
+      feather.replace();
+    block script

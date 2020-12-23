@@ -1,0 +1,30 @@
+extends layout
+
+block content
+  .d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
+    h1 TCP
+  table.table.table-striped.table-bordered.packet-table
+    thead
+      tr
+        th.text-center(style='width: 200px') Timestamp
+        th.text-center(style='width: 150px') Source
+        th.text-center(style='width: 150px') Destination
+        th.text-center(style='width: 50px') Length
+        th.text-center Payload
+    tbody#tcp-data
+
+block script
+  script.
+    var socket = io();
+    socket.on("connect", () => {
+      console.log(`Connected, ${socket.id}`);
+      console.log(socket);
+    });
+
+    socket.on("disconnect", () => {
+      console.log(`Disconnected`);
+    });
+
+    socket.on("tcp", (msg) => {
+      console.log(msg);
+    })

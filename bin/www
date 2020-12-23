@@ -1,0 +1,152 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('q-test-server:server');
+var http = require('http');
+var https = require('https');
+var fs = require('fs');
+var net = require('net');
+
+var certKey = process.env.CERTKEY || 'cert/quectel.iptime.org-key.pem';
+var certCrt = process.env.CERTCRT || 'cert/quectel.iptime.org-crt.pem';
+
+const options = {
+  key: fs.readFileSync(certKey),
+  cert: fs.readFileSync(certCrt)
+};
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '80');
+var sslport = normalizePort(process.env.SSLPORT || '443');
+var tcpport = normalizePort(process.env.TCPPORT || '8001');
+
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+// Redirect to https
+var server = http.createServer(function (req, res) {
+  res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+  res.end();
+});
+// Create https server
+var servers = https.createServer(options, app);
+// Create tcp server
+var tcpServer = net.Server();
+
+// Add socket.io
+var io = require('socket.io')(servers);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+servers.listen(sslport);
+tcpServer.listen('0.0.0.0', tcpport, function() {
+  console.log(`Server listening for connection requests on socket %j:${tcpport}`, tcpServer.address());
+})
+servers.on('error', onError);
+servers.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = servers.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  io.emit('data','hi');
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});
+
+/* TCP server handling */
+tcpServer.on('connection', function(socket) {
+  console.log('A new connection has been established.');
+
+  // Now that a TCP connection has been established, the server can send data to
+  // the client by writing to its socket.
+  socket.write('Hello, client.');
+
+  // The server can also receive data from the client by reading from its socket.
+  socket.on('data', function(chunk) {
+      console.log(`Data received from client: ${chunk.toString()}`);
+  });
+
+  // When the client requests to end the TCP connection with the server, the server
+  // ends the connection.
+  socket.on('end', function() {
+      console.log('Closing connection with the client');
+  });
+
+  // Don't forget to catch error, for your own sake.
+  socket.on('error', function(err) {
+      console.log(`Error: ${err}`);
+  });
+});

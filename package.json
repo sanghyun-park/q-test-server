@@ -1,0 +1,21 @@
+{
+  "name": "q-test-server",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "install": "^0.13.0",
+    "moment": "^2.29.1",
+    "morgan": "~1.9.1",
+    "npm": "^6.14.10",
+    "pug": "2.0.0-beta11",
+    "socket.io": "^3.0.4",
+    "sqlite3": "^5.0.0"
+  }
+}
